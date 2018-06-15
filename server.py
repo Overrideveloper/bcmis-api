@@ -59,10 +59,10 @@ def signup():
     group = request.form.get('group')
 
     process = user.createUser(username, password, group)
-    if process == 200:
+    if process is 200:
         response = jsonify(message = True, code = 200)
         response.status_code = 200
-    elif process == 201:
+    elif process is 201:
         response = jsonify(message = False, code = 201)
         response.status_code = 201
     else:
@@ -77,14 +77,13 @@ def login():
     password = request.form.get('hash')
     process = user.checkUser(username, password)
 
-    if process != None:
+    if process is None:
+        response = jsonify(message=False, code = 404, data = "Username or password incorrect")
+        response.status_code = 404
+    else:
         data = [{'username': process.username, 'group': process.group}]
         response = jsonify(message=True, code = 200, data = data)
         response.status_code = 200
-    else:
-        response = jsonify(message=False, code = 404, data = "Username or password incorrect")
-        response.status_code = 404
-
     return response
 
 @server.route("/user/check_group", methods=["POST"])
@@ -106,18 +105,58 @@ def checkGroup():
 
 @server.route("/user/list", methods=["GET"])
 @crossdomain(origin="*")
-def list():
+def listUsers():
     users = user.list()
     
     user_array = []
 
     for _user in users:
-        data = {'username': _user.username, 'group': _user.group}
+        data = {'username': _user.username, 'group': _user.group, 'id': _user.id}
         user_array.append(data)
         
     response = jsonify(message=True, code = 200, data = user_array)
     response.status_code = 200
 
+    return response
+
+@server.route("/user/single", methods=["POST"])
+@crossdomain(origin="*")
+def singleUser():
+    id = request.form.get('id')
+    process = user.getUser(id)
+
+    if process is None:
+        response = jsonify(message=True, code = 200, data = [])
+        response.status_code = 200
+    else:
+        _array = []
+        data = {'username': process.username, 'group': process.group}
+        _array.append(data)
+        response = jsonify(message=True, code = 200, data = _array)
+        response.status_code = 200
+    return response
+
+@server.route("/user/modify", methods=["POST"])
+@crossdomain(origin="*")
+def modifyUser():
+    id = request.form.get('id')
+    group = request.form.get('group')
+    process = user.modifyUser(id, group)
+
+    if process is 200:
+        response = jsonify(message=True, code = 200, data="User modified")
+        response.status_code = 200
+    return response
+
+@server.route("/user/delete", methods=["POST"])
+@crossdomain(origin="*")
+def deleteUser():
+    id = request.form.get('id')
+    process = user.deleteUser(id)
+
+    if process is 200:
+        response = jsonify(message=True, code = 200, data="User deleted")
+        response.status_code = 200
     return response
 
 if __name__ == '__main__':

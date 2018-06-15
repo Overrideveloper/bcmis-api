@@ -4,7 +4,7 @@ from init import db, marsh, user_schema, users_schema, User
 
 def createUser(_username, _password, _group):
     user = User.query.filter_by(username=_username).first()
-    if user == None:
+    if user is None:
         username = _username
         password = bcrypt.hashpw(_password.encode('utf8'), bcrypt.gensalt())
         group = _group
@@ -35,3 +35,29 @@ def checkGroup(_group):
 def list():
     users = User.query.all()
     return users
+
+def getUser(id):
+    user = User.query.get(id)
+    if user is None:
+        response = None
+    else:
+        response = user
+    return response
+
+def modifyUser(id, _group):
+    user = User.query.get(id)
+    username = user.username
+    hash = user.password
+
+    user.username = username
+    user.password = hash
+    user.group = _group
+
+    db.session.commit()
+    return 200
+
+def deleteUser(id):
+    user = User.query.get(id)
+    db.session.delete(user)
+    db.session.commit()
+    return 200
