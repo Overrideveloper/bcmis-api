@@ -3,6 +3,7 @@ import user as user
 from init import server
 from functools import update_wrapper
 from datetime import timedelta
+import json
 
 def crossdomain(origin=None, methods=None, headers=None, max_age=21600, attach_to_all=True, automatic_options=True):
     if methods is not None:
@@ -58,10 +59,12 @@ def signup():
     group = request.form.get('group')
 
     process = user.createUser(username, password, group)
-
     if process == 200:
         response = jsonify(message = True, code = 200)
         response.status_code = 200
+    elif process == 201:
+        response = jsonify(message = False, code = 201)
+        response.status_code = 201
     else:
         response = jsonify(message = False, code = 500, data = "Error occured. Please try again")
         response.status_code = 500
@@ -81,6 +84,39 @@ def login():
     else:
         response = jsonify(message=False, code = 404, data = "Username or password incorrect")
         response.status_code = 404
+
+    return response
+
+@server.route("/user/check_group", methods=["POST"])
+@crossdomain(origin="*")
+def checkGroup():
+    group = request.form.get('group')
+    users = user.checkGroup(group)
+    
+    user_array = []
+
+    for _user in users:
+        data = {'username': _user.username, 'group': _user.group}
+        user_array.append(data)
+        
+    response = jsonify(message=True, code = 200, data = user_array)
+    response.status_code = 200
+
+    return response
+
+@server.route("/user/list", methods=["GET"])
+@crossdomain(origin="*")
+def list():
+    users = user.list()
+    
+    user_array = []
+
+    for _user in users:
+        data = {'username': _user.username, 'group': _user.group}
+        user_array.append(data)
+        
+    response = jsonify(message=True, code = 200, data = user_array)
+    response.status_code = 200
 
     return response
 
