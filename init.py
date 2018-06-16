@@ -30,3 +30,23 @@ class UserSchema(marsh.Schema):
 
 user_schema = UserSchema()
 users_schema = UserSchema(many = True)
+
+class Patient(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(80), unique = False)
+    age = db.Column(db.String(80), unique = False)
+    height = db.Column(db.String(80), unique = False)
+    weight = db.Column(db.String(80), unique = False)
+
+    def __init__(self, name, age, height, weight):
+        self.name = name
+        self.age = age
+        self.height = height
+        self.weight = weight
+
+class PatientSchema(marsh.Schema):
+    class Meta:
+        field = ('id', 'name', 'age', 'height', 'weight')
+
+patient_schema = PatientSchema()
+patients_schema = PatientSchema(many = True)

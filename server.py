@@ -1,9 +1,8 @@
 from flask import Flask, jsonify, request, make_response, current_app
-import user as user
+import user, patient, json
 from init import server
 from functools import update_wrapper
 from datetime import timedelta
-import json
 
 def crossdomain(origin=None, methods=None, headers=None, max_age=21600, attach_to_all=True, automatic_options=True):
     if methods is not None:
@@ -107,16 +106,13 @@ def checkGroup():
 @crossdomain(origin="*")
 def listUsers():
     users = user.list()
-    
     user_array = []
 
     for _user in users:
         data = {'username': _user.username, 'group': _user.group, 'id': _user.id}
         user_array.append(data)
-        
     response = jsonify(message=True, code = 200, data = user_array)
     response.status_code = 200
-
     return response
 
 @server.route("/user/single", methods=["POST"])
@@ -156,6 +152,82 @@ def deleteUser():
 
     if process is 200:
         response = jsonify(message=True, code = 200, data="User deleted")
+        response.status_code = 200
+    return response
+
+@server.route("/patient/create", methods=["POST"])
+@crossdomain(origin="*")
+def createPatient():
+    name = request.form.get('name')
+    age = request.form.get('age')
+    height = request.form.get('height')
+    weight = request.form.get('weight')
+
+    process = patient.createPatient(name, age, height, weight)
+    if process is 200:
+        response = jsonify(message = True, code = 200)
+        response.status_code = 200
+    elif process is 201:
+        response = jsonify(message = False, code = 201)
+        response.status_code = 201
+    else:
+        response = jsonify(message = False, code = 500, data = "Error occured. Please try again")
+        response.status_code = 500
+    return response
+
+@server.route("/patient/list", methods=["GET"])
+@crossdomain(origin="*")
+def listPatients():
+    patients = patient.list()
+    patient_array = []
+
+    for _patient in patients:
+        data = {'name': _patient.name, 'age': _patient.age, 'height': _patient.height, 'weight': _patient.weight, 'id': _patient.id}
+        patient_array.append(data)
+    response = jsonify(message=True, code = 200, data = patient_array)
+    response.status_code = 200
+    return response
+
+@server.route("/patient/single", methods=["POST"])
+@crossdomain(origin="*")
+def singlePatient():
+    id = request.form.get('id')
+    process = patient.getPatient(id)
+
+    if process is None:
+        response = jsonify(message=True, code = 200, data = [])
+        response.status_code = 200
+    else:
+        _array = []
+        data = {'name': process.name, 'age': process.age, 'height': process.height, 'weight': process.weight, 'id': process.id}
+        _array.append(data)
+        response = jsonify(message=True, code = 200, data = _array)
+        response.status_code = 200
+    return response
+
+@server.route("/patient/modify", methods=["POST"])
+@crossdomain(origin="*")
+def modifyPatient():
+    id = request.form.get('id')
+    name = request.form.get('name')
+    age = request.form.get('age')
+    height = request.form.get('height')
+    weight = request.form.get('weight')
+    process = patient.modifyPatient(id, name, age, height, weight)
+
+    if process is 200:
+        response = jsonify(message=True, code = 200, data="Patient modified")
+        response.status_code = 200
+    return response
+
+@server.route("/patient/delete", methods=["POST"])
+@crossdomain(origin="*")
+def deletePatient():
+    id = request.form.get('id')
+    process = patient.deletePatient(id)
+
+    if process is 200:
+        response = jsonify(message=True, code = 200, data="Patient deleted")
         response.status_code = 200
     return response
 

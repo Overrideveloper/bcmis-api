@@ -1,4 +1,3 @@
-from flask import Flask, request, jsonify
 import bcrypt
 from init import db, marsh, user_schema, users_schema, User
 
