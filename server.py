@@ -201,7 +201,11 @@ def singlePatient():
         response.status_code = 200
     else:
         _array = []
-        data = {'name': process.name, 'age': process.age, 'height': process.height, 'weight': process.weight, 'id': process.id}
+        data = {
+            'name': process.name, 'age': process.age, 
+            'height': process.height, 'weight': process.weight, 
+            'id': process.id, 'group': process.group, 'genotype': process.genotype
+            }
         _array.append(data)
         response = jsonify(message=True, code = 200, data = _array)
         response.status_code = 200
