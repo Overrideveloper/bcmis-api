@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, make_response, current_app
-import user, patient, json
+import user, patient as patient, json
 from init import server
 from functools import update_wrapper
 from datetime import timedelta
@@ -162,8 +162,10 @@ def createPatient():
     age = request.form.get('age')
     height = request.form.get('height')
     weight = request.form.get('weight')
+    group = request.form.get('group')
+    genotype = request.form.get('genotype')
 
-    process = patient.createPatient(name, age, height, weight)
+    process = patient.createPatient(name, age, height, weight, group, genotype)
     if process is 200:
         response = jsonify(message = True, code = 200)
         response.status_code = 200
@@ -213,7 +215,9 @@ def modifyPatient():
     age = request.form.get('age')
     height = request.form.get('height')
     weight = request.form.get('weight')
-    process = patient.modifyPatient(id, name, age, height, weight)
+    group = request.form.get('group')
+    genotype = request.form.get('genotype')
+    process = patient.modifyPatient(id, name, age, height, weight, group, genotype)
 
     if process is 200:
         response = jsonify(message=True, code = 200, data="Patient modified")

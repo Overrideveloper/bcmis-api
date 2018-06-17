@@ -1,9 +1,9 @@
 from init import db, marsh, patient_schema, patients_schema, Patient
 
-def createPatient(_name, _age, _height, _weight):
+def createPatient(_name, _age, _height, _weight, _group, _genotype):
     patient = Patient.query.filter_by(name=_name).first()
     if patient is None:
-        new_patient = Patient(_name, _age, _height, _weight)
+        new_patient = Patient(_name, _age, _height, _weight, _group, _genotype)
         db.session.add(new_patient)
         db.session.commit()
         data = patient_schema.dump(new_patient).data
@@ -24,12 +24,14 @@ def getPatient(id):
         response = patient
     return response
 
-def modifyPatient(id, _name, _age, _height, _weight):
+def modifyPatient(id, _name, _age, _height, _weight, _group, _genotype):
     patient = Patient.query.get(id)
     patient.name = _name
     patient.age = _age
     patient.height = _height
     patient.weight = _weight
+    patient.group = _group
+    patient.genotype = _genotype
 
     db.session.commit()
     return 200
