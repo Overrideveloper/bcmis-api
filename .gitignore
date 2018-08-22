@@ -35,6 +35,7 @@ yarn-error.log
 testem.log
 /typings
 *.sqlite
+/dataset/*
 
 # e2e
 /e2e/*.js
