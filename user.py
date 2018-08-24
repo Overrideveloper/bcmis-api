@@ -11,12 +11,11 @@ def createUser(_username, _password, _group):
 
     db.session.add(new_user)
     db.session.commit()
-    data = user_schema.dump(new_user).data
     return 200
 
 def checkUser(_username, _password):
     user = User.query.filter_by(username=_username).first()
-    passwordCheck = bcrypt.checkpw(_password.encode('utf8'), user.password);
+    passwordCheck = bcrypt.checkpw(_password.encode('utf8'), user.password)
     if passwordCheck == True:
         response = user
     else:

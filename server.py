@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, make_response, current_app
-import user as user
+import user
+import patient
 from init import server
 from functools import update_wrapper
 from datetime import timedelta
@@ -81,7 +82,87 @@ def login():
     else:
         response = jsonify(message=False, code = 404, data = "Username or password incorrect")
         response.status_code = 404
+    return response
 
+@server.route("/patient/create", methods=["POST"])
+@crossdomain(origin="*")
+def createPatient():
+    name = request.form.get('name')
+    age = request.form.get('age')
+    height = request.form.get('height')
+    weight = request.form.get('weight')
+    blood_group = request.form.get('blood_group')
+    genotype = request.form.get('genotype')
+
+    process = patient.addPatient(name, age, height, weight, blood_group, genotype)
+    if process == 200:
+        response = jsonify(message = True, code = 200)
+        response.status_code = 200
+    else:
+        response = jsonify(message = False, code = 500, data = "Error occured. Please try again")
+        response.status_code = 500
+    return response
+
+@server.route("/patient/list", methods=["GET"])
+@crossdomain(origin="*")
+def listPatients():
+    process = patient.listPatients()
+    print(process)
+    if process == []:
+        response = jsonify(message = True, code = 200, data = [])
+        response.status_code = 200
+    else:
+        response = jsonify(message = True, code = 200, data = process)
+        response.status_code = 200
+    return response
+
+@server.route("/patient/read", methods=["POST"])
+@crossdomain(origin="*")
+def getPatient():
+    id = request.form.get('id')
+    process = patient.getPatient(id)
+
+    if process == None or process == []:
+        response = jsonify(message = True, code = 200, data = [])
+        response.status_code = 200
+    else:
+        response = jsonify(message = True, code = 200, data = process)
+        response.status_code = 200
+    return response
+
+@server.route("/patient/update", methods=["POST"])
+@crossdomain(origin="*")
+def editPatient():
+    id = request.form.get('id')
+    name = request.form.get('name')
+    age = request.form.get('age')
+    height = request.form.get('height')
+    weight = request.form.get('weight')
+    blood_group = request.form.get('blood_group')
+    genotype = request.form.get('genotype')
+
+    process = patient.editPatient(id, name, age, height, weight, blood_group, genotype)
+
+    if process == 200:
+        response = jsonify(message = True, code = 200)
+        response.status_code = 200
+    else:
+        response = jsonify(message = False, code = 500, data = "Error occured. Please try again")
+        response.status_code = 500
+    return response
+
+@server.route("/patient/delete", methods=["POST"])
+@crossdomain(origin="*")
+def deletePatient():
+    id = request.form.get('id')
+    process = patient.deletePatient(id)
+    
+    if process == 200:
+        response = jsonify(message = True, code = 200)
+        response.status_code = 200
+    else:
+        response = jsonify(message = False, code = 500, data = "Error occured. Please try again")
+        response.status_code = 500
     return response
 
 if __name__ == '__main__':
