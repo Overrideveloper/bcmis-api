@@ -104,10 +104,11 @@ def createPatient():
     age = request.form.get('age')
     height = request.form.get('height')
     weight = request.form.get('weight')
+    gender = request.form.get('gender')
     blood_group = request.form.get('blood_group')
     genotype = request.form.get('genotype')
 
-    process = patient.addPatient(name, age, height, weight, blood_group, genotype)
+    process = patient.addPatient(name, age, gender, height, weight, blood_group, genotype)
     if process == 200:
         response = jsonify(message = True, code = 200)
         response.status_code = 200
@@ -149,12 +150,13 @@ def editPatient():
     id = request.form.get('id')
     name = request.form.get('name')
     age = request.form.get('age')
+    gender = request.form.get('gender')
     height = request.form.get('height')
     weight = request.form.get('weight')
     blood_group = request.form.get('blood_group')
     genotype = request.form.get('genotype')
 
-    process = patient.editPatient(id, name, age, height, weight, blood_group, genotype)
+    process = patient.editPatient(id, name, age, gender, height, weight, blood_group, genotype)
 
     if process == 200:
         response = jsonify(message = True, code = 200)

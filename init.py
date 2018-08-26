@@ -31,15 +31,17 @@ class UserSchema(marsh.Schema):
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(80))
+    gender = db.Column(db.String(80))
     age = db.Column(db.Integer)
     height = db.Column(db.Integer)
     weight = db.Column(db.Integer)
     blood_group = db.Column(db.String(80))
     genotype = db.Column(db.String(80))
 
-    def __init__(self, name, age, height, weight, blood_group, genotype):
+    def __init__(self, name, age, gender, height, weight, blood_group, genotype):
         self.name = name
         self.age = age
+        self.gender = gender
         self.height = height
         self.weight = weight
         self.blood_group = blood_group
@@ -47,7 +49,7 @@ class Patient(db.Model):
 
 class PatientSchema(marsh.Schema):
     class Meta:
-        fields = ('id', 'name', 'age', 'height', 'weight', 'blood_group', 'genotype')
+        fields = ('id', 'name', 'age', 'gender', 'height', 'weight', 'blood_group', 'genotype')
 
 user_schema = UserSchema()
 users_schema = UserSchema(many = True)
