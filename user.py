@@ -21,3 +21,8 @@ def checkUser(_username, _password):
     else:
         response = None
     return response
+
+def listUsers():
+    users = User.query.all()
+    result = users_schema.dump(users).data
+    return result

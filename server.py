@@ -68,6 +68,19 @@ def signup():
         response.status_code = 500
     return response
 
+@server.route("/user/list", methods=["GET"])
+@crossdomain(origin="*")
+def listUsers():
+    response = user.listUsers()
+
+    if response == []:
+        response = jsonify(message = False, code = 200, data = [])
+        response.status_code = 200
+    else:
+        response = jsonify(message = True, code = 200, data = response)
+        response.status_code = 200
+    return response
+
 @server.route("/user/login", methods=["POST"])
 @crossdomain(origin="*")
 def login():
