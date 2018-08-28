@@ -1,8 +1,20 @@
-from flask import Flask, jsonify, request, make_response, current_app
+import os
+from flask import Flask, jsonify, request, make_response, current_app, redirect, url_for, send_from_directory
 import user, patient, test
 from init import server
 from functools import update_wrapper
 from datetime import timedelta
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = '../uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+server.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+server.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower in ALLOWED_EXTENSIONS
 
 def crossdomain(origin=None, methods=None, headers=None, max_age=21600, attach_to_all=True, automatic_options=True):
     if methods is not None:
@@ -42,6 +54,29 @@ def crossdomain(origin=None, methods=None, headers=None, max_age=21600, attach_t
         f.provide_automatic_options = False
         return update_wrapper(wrapped_function, f)
     return decorator
+
+@server.route("/upload", methods=['POST', 'GET'])
+@crossdomain(origin="*")
+def upload_file():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected files')
+            return redirect(request.url)
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(server.config['UPLOAD_FOLDER'], filename))
+            return jsonify(filename = filename)
+        else: 
+            return jsonify(message = "Uploading failed")
+
+@server.route("/upload/<filename>")
+@crossdomain(origin="*")
+def uploaded_file(filename):
+    return send_from_directory(server.config['UPLOAD_FOLDER'], filename)
 
 @server.route("/")
 @crossdomain(origin="*")
