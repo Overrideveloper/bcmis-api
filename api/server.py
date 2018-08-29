@@ -5,6 +5,7 @@ from init import server
 from functools import update_wrapper
 from datetime import timedelta
 from werkzeug.utils import secure_filename
+from model import test as cnn
 
 UPLOAD_FOLDER = '../uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -59,19 +60,17 @@ def crossdomain(origin=None, methods=None, headers=None, max_age=21600, attach_t
 @crossdomain(origin="*")
 def upload_file():
     if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
+        if 'image' not in request.files:
+            return jsonify(code = 400, message = "No image in request")
+        file = request.files['image']
         if file.filename == '':
-            flash('No selected files')
-            return redirect(request.url)
+            return jsonify(code = 400, message = "No image in request")
         if file.filename != '':
             filename = secure_filename(file.filename)
             file.save(os.path.join(server.config['UPLOAD_FOLDER'], filename))
-            return jsonify(filename = filename)
+            return jsonify(code = 200, message = "Uploading done!", filename = filename)
         else: 
-            return jsonify(message = "Uploading failed")
+            return jsonify(message = "Uploading failed!")
 
 @server.route("/upload/<filename>")
 @crossdomain(origin="*")
@@ -183,7 +182,7 @@ def getPatient():
     id = request.form.get('id')
     process = patient.getPatient(id)
 
-    if process == None or process == []:
+    if process == None or process == [] or process == {}:
         response = jsonify(message = True, code = 200, data = [])
         response.status_code = 200
     else:
@@ -239,6 +238,34 @@ def listTest():
         response.status_code = 200
     return response
 
+@server.route("/test/read", methods=["POST"])
+@crossdomain(origin="*")
+def getTest():
+    id = request.form.get('id')
+    process = test.getTest(id)
+
+    if process == None or process == [] or process == {}:
+        response = jsonify(message = True, code = 200, data = [])
+        response.status_code = 200
+    else:
+        response = jsonify(message = True, code = 200, data = process)
+        response.status_code = 200
+    return response
+
+@server.route("/test/read_by_patient", methods=["POST"])
+@crossdomain(origin="*")
+def getPatientTest():
+    patient_id = request.form.get('patient_id')
+    process = test.getPatientTest(patient_id)
+
+    if process == None or process == [] or process == {}:
+        response = jsonify(message = True, code = 200, data = [])
+        response.status_code = 200
+    else:
+        response = jsonify(message = True, code = 200, data = process)
+        response.status_code = 200
+    return response
+
 @server.route("/test/positive", methods=["GET"])
 @crossdomain(origin="*")
 def positiveTests():
@@ -262,6 +289,22 @@ def negativeTests():
         response = jsonify(message = True, code = 200, data = process)
         response.status_code = 200
     return response
+
+@server.route("/test/run", methods=["POST"])
+@crossdomain(origin="*")
+def diagnosis():
+    patient_id = request.form.get('patient_id')
+    timestamp = request.form.get('timestamp')
+    image = request.form.get('img')
+    if 'image' not in request.files:
+        return jsonify(code = 400, message = "No image in request")
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify(code = 400, message = "No image in request")
+    if file.filename != '':
+        prediction = cnn.predict(file)
+        process = test.addTest(patient_id, timestamp, prediction, image)
+        return jsonify(code = 200, data = process)
 
 if __name__ == '__main__':
     server.run('0.0.0.0', port=2701, debug=True)

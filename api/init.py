@@ -56,15 +56,17 @@ class Test(db.Model):
     patient_id = db.Column(db.Integer)
     timestamp = db.Column(db.Integer)
     result = db.Column(db.String(80))
+    image = db.Column(db.String(80))
 
-    def __init__(self, patient_id, timestamp, result):
+    def __init__(self, patient_id, timestamp, result, image):
         self.patient_id = patient_id
         self.timestamp = timestamp
         self.result = result
+        self.image = image
 
 class TestSchema(marsh.Schema):
     class Meta:
-        fields = ('id', 'patient_id', 'timestamp', 'result')
+        fields = ('id', 'patient_id', 'timestamp', 'result', 'image')
 
 user_schema = UserSchema()
 users_schema = UserSchema(many = True)
