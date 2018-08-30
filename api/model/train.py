@@ -30,7 +30,7 @@ history = AccuracyHistory()
 model = Sequential()
 
 # Convolution
-model.add(Conv2D(32, (3, 3), input_shape = (25, 25, 3), activation = 'relu'))
+model.add(Conv2D(32, (3, 3), input_shape = (50, 50, 3), activation = 'relu'))
 
 # Pooling
 model.add(MaxPooling2D(pool_size = (2, 2)))
@@ -57,10 +57,10 @@ batchSize = 32
 epochs = 30
 
 training_set = train_datagen.flow_from_directory(r'C:\Users\banso\Desktop\bcmis-api\dataset\train',
-target_size = (25, 25), batch_size = batchSize, class_mode = 'binary')
+target_size = (50, 50), batch_size = batchSize, class_mode = 'binary')
 
 test_set = test_datagen.flow_from_directory(r'C:\Users\banso\Desktop\bcmis-api\dataset\test',
-target_size = (25, 25), batch_size = batchSize, class_mode = 'binary')
+target_size = (50, 50), batch_size = batchSize, class_mode = 'binary')
 
 model.fit_generator(training_set, steps_per_epoch = 9200, epochs = epochs, validation_data = test_set, validation_steps = 4200, callbacks=[history])
 
