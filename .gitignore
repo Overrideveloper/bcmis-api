@@ -36,6 +36,7 @@ testem.log
 /typings
 *.sqlite
 /dataset/*
+/uploads/*
 
 # e2e
 /e2e/*.js
