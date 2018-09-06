@@ -15,11 +15,14 @@ def createUser(_username, _password, _group):
 
 def checkUser(_username, _password):
     user = User.query.filter_by(username=_username).first()
-    passwordCheck = bcrypt.checkpw(_password.encode('utf8'), user.password)
-    if passwordCheck == True:
-        response = user
-    else:
+    if user == None:
         response = None
+    else:
+        passwordCheck = bcrypt.checkpw(_password.encode('utf8'), user.password)
+        if passwordCheck == True:
+            response = user
+        else:
+            response = None
     return response
 
 def listUsers():

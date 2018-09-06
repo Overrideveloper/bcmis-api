@@ -66,9 +66,12 @@ def upload_file():
         if file.filename == '':
             return jsonify(code = 400, message = "No image in request")
         if file.filename != '':
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(server.config['UPLOAD_FOLDER'], filename))
-            return jsonify(code = 200, message = "Uploading done!", filename = filename)
+            if "class" in file.filename:
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(server.config['UPLOAD_FOLDER'], filename))
+                return jsonify(code = 200, message = "Uploading done!", filename = filename)
+            else:
+                return jsonify(code = 400, message = "Image is not that of a biopsy slide!")
         else: 
             return jsonify(message = "Uploading failed!")
 
