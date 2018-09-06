@@ -32,11 +32,8 @@ model = Sequential()
 # Convolution
 model.add(Conv2D(32, (3, 3), input_shape = (50, 50, 3), activation = 'relu'))
 
-# Pooling
-model.add(MaxPooling2D(pool_size = (2, 2)))
-
 # Second convolutional layer
-model.add(Conv2D(32, (3, 3), activation = 'relu'))
+model.add(Conv2D(64, (3, 3), activation = 'relu'))
 model.add(MaxPooling2D(pool_size = (2, 2)))
 
 # Flattening
@@ -47,14 +44,14 @@ model.add(Dense(units = 128, activation = 'relu'))
 model.add(Dense(units = 1, activation = 'sigmoid'))
 
 # Compiling the CNN
-model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+model.compile(optimizer = 'adadelta', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
-train_datagen = ImageDataGenerator(rescale = 1./255, shear_range = 0.2, zoom_range = 0.2, horizontal_flip = True)
+train_datagen = ImageDataGenerator(rescale = 1./255, vertical_flip = True, horizontal_flip = True)
 
 test_datagen = ImageDataGenerator(rescale = 1./255)
 
-batchSize = 32
-epochs = 30
+batchSize = 128
+epochs = 8
 
 training_set = train_datagen.flow_from_directory(r'C:\Users\banso\Desktop\bcmis-api\dataset\train',
 target_size = (50, 50), batch_size = batchSize, class_mode = 'binary')
@@ -74,18 +71,26 @@ auc_score = auc(fpr, tpr)
 plt.style.use("ggplot")
 plt.figure(1)
 N = epochs
-plt.plot(range(0, N), history.loss, label="training loss")
-plt.plot(range(0, N), history.val_loss, label="validation loss")
-plt.plot(range(0, N), history.acc, label="training accuracy")
-plt.plot(range(0, N), history.val_acc, label="validation accuracy")
-plt.title("Training and Validation Accuracy/Loss")
+plt.plot(range(0, N), history.acc, label="train")
+plt.plot(range(0, N), history.val_acc, label="test")
+plt.title("Training and Validation Accuracy")
 plt.xlabel("Epoch #")
-plt.ylabel("Loss/Accuracy")
+plt.ylabel("Accuracy")
+plt.legend(loc="upper left")
+plt.show()
+
+plt.figure(2)
+N = epochs
+plt.plot(range(0, N), history.loss, label="train")
+plt.plot(range(0, N), history.val_loss, label="test")
+plt.title("Training and Validation Loss")
+plt.xlabel("Epoch #")
+plt.ylabel("Loss")
 plt.legend(loc="upper left")
 plt.show()
 
 #Plot ROC curve
-plt.figure(2)
+plt.figure(3)
 plt.plot(fpr, tpr, label="Area Under Curve(AUC) = {:.3f}".format(auc_score))
 plt.xlabel('False positive rate')
 plt.ylabel('True positive rate')
