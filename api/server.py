@@ -302,8 +302,9 @@ def diagnosis():
     if file.filename == '':
         return jsonify(code = 400, message = "No image in request")
     if file.filename != '':
-        prediction = cnn.predict(file)
-        process = test.addTest(patient_id, timestamp, prediction, image)
+        res = cnn.predict(file)
+        #print(res)
+        process = test.addTest(patient_id, timestamp, res['response'], res['accuracy'], image)
         return jsonify(code = 200, data = process)
 
 if __name__ == '__main__':

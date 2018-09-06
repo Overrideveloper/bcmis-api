@@ -50,7 +50,10 @@ def predict(input_image):
     else:
         response = "positive"
 
-    print(response)
-    
+    res = {"response": response, "accuracy": acc}
+
+    '''print(res['response'])
+    print(res['accuracy'])'''
+
     K.clear_session()
-    return response
+    return res

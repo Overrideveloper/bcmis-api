@@ -2,13 +2,14 @@ from flask import Flask, request, jsonify
 import bcrypt
 from init import db, marsh, test_schema, tests_schema, Test
 
-def addTest(_patient_id, _timestamp, _result, _img):
+def addTest(_patient_id, _timestamp, _result, _confidence, _img):
     patient_id = _patient_id
     timestamp = _timestamp
     result = _result
     image = _img
+    confidence = _confidence
 
-    new_test = Test(patient_id, timestamp, result, image)
+    new_test = Test(patient_id, timestamp, result, confidence, image)
     db.session.add(new_test)
     db.session.commit()
     result = test_schema.dump(new_test).data
