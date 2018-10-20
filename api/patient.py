@@ -15,7 +15,9 @@ def addPatient(_name, _age, _gender, _height, _weight, _blood_group, _genotype):
 
     db.session.add(new_patient)
     db.session.commit()
-    return 200
+
+    _patient = patient_schema.dump(new_patient).data
+    return _patient
 
 def listPatients():
     patients = Patient.query.all()
@@ -36,7 +38,8 @@ def editPatient(id, name, age, gender, height, weight, blood_group, genotype):
     patient.blood_group = blood_group
     patient.genotype = genotype
     db.session.commit()
-    return 200
+    _patient = patient_schema.dump(patient).data
+    return _patient
 
 def deletePatient(id):
     patient = Patient.query.get(id)

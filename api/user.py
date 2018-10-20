@@ -11,7 +11,8 @@ def createUser(_username, _password, _group):
 
     db.session.add(new_user)
     db.session.commit()
-    return 200
+    _user = user_schema.dump(new_user).data
+    return _user
 
 def checkUser(_username, _password):
     user = User.query.filter_by(username=_username).first()

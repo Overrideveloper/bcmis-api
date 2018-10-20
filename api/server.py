@@ -96,8 +96,8 @@ def signup():
 
     process = user.createUser(username, password, group)
 
-    if process == 200:
-        response = jsonify(message = True, code = 200)
+    if process != None:
+        response = jsonify(message = True, code = 200, data = process)
         response.status_code = 200
     else:
         response = jsonify(message = False, code = 500, data = "Error occured. Please try again")
@@ -159,8 +159,8 @@ def createPatient():
     genotype = request.form.get('genotype')
 
     process = patient.addPatient(name, age, gender, height, weight, blood_group, genotype)
-    if process == 200:
-        response = jsonify(message = True, code = 200)
+    if process != None:
+        response = jsonify(message = True, code = 200, data = process)
         response.status_code = 200
     else:
         response = jsonify(message = False, code = 500, data = "Error occured. Please try again")
@@ -207,8 +207,8 @@ def editPatient():
 
     process = patient.editPatient(id, name, age, gender, height, weight, blood_group, genotype)
 
-    if process == 200:
-        response = jsonify(message = True, code = 200)
+    if process != None:
+        response = jsonify(message = True, code = 200, data = process)
         response.status_code = 200
     else:
         response = jsonify(message = False, code = 500, data = "Error occured. Please try again")

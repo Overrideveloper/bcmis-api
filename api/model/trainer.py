@@ -320,14 +320,13 @@ def plot_learning_curve(history):
     plt.legend(['train', 'test'], loc='upper left')
     plt.savefig('./loss_curve.png')
     
-
 def runKerasCNNAugment(a,b,c,d,e,f):
     """
     Run Keras CNN: https://github.com/fchollet/keras/blob/master/examples/mnist_cnn.py
     """
-    batch_size = 128
+    batch_size = 32
     num_classes = 2
-    epochs = 16
+    epochs = 10
 #     img_rows, img_cols = a.shape[1],a.shape[2]
     img_rows,img_cols=50,50
     input_shape = (img_rows, img_cols, 3)
