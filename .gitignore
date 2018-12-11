@@ -37,6 +37,8 @@ testem.log
 *.sqlite
 /dataset/*
 /uploads/*
+/api/haar-cascade/n
+/api/haar-cascade/p
 
 # e2e
 /e2e/*.js
