@@ -7,6 +7,7 @@ app = __name__
 server = Flask(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+#server.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 server.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'bcmis.sqlite')
 server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

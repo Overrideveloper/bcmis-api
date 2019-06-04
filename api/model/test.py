@@ -6,12 +6,12 @@ import cv2
 from PIL import Image
 
 def predict(input_image):
-    json_file = open(r'C:\Users\banso\Desktop\bcmis-api\api\model\model.json', 'r')
+    json_file = open(r'C:\Users\banso\Desktop\Dev\Active\bcmis-api\api\model\model.json', 'r')
     model_json = json_file.read()
     json_file.close()
 
     model = model_from_json(model_json)
-    model.load_weights(r"C:\Users\banso\Desktop\bcmis-api\api\model\model.h5")
+    model.load_weights(r"C:\Users\banso\Desktop\Dev\Active\bcmis-api\api\model\model.h5")
 
     model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
